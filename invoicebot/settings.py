@@ -125,4 +125,4 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 FILE_ROUTE='/static/'
-PREFILENAME='bot\linemsg_'
+PREFILENAME='bot/linemsg_'
