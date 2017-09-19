@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>test for order</title>
+</head>
+<body>
+    
+
+
+</body>
+</html>
+
+{% extends 'base.html' %}
+
+{% block title %}訂閱Rate Notify{% endblock %}
+
+{% block nav %}
+<li><a href="/index/">回到首頁</a></li>
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript">
+</script>
+{% endblock %}
+
+{% block container %}
+<secton id="container">
+<div class="container">
+	您的訂單{{ Pay2GoReturnInfo.MerchantOrderNo }}已完成付款<br>
+    交易金額:新台幣{{ Pay2GoReturnInfo.Amt }}元整<br>
+    請關閉此頁面，繼續使用本服務
+    
+</div>
+</section>
+{% endblock %}
+ 

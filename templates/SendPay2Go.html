@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>test for order</title>
+</head>
+<body>
+    <form name='Pay2go' id='Pay2Go' method='post' action='https://ccore.spgateway.com/MPG/mpg_gateway'>
+        <input type='hidden' name='MerchantID' value='{{ Pay2GoInfo.MerchantID }}'><br>
+        <input type='hidden' name='RespondType' value='JSON'><br>
+        <input type='hidden' name='CheckValue' value='{{ Pay2GoInfo.CheckValue }}'><br>
+        <input type='hidden' id='TimeStamp' name='TimeStamp' value='{{ Pay2GoInfo.TimeStamp }}'><br>
+        <input type='hidden' name='Version' value='1.2'><br>
+        <input type='hidden' name='LangType' value='zh-tw'><br>
+        <input type='hidden' name='MerchantOrderNo' value='{{ Pay2GoInfo.MerchantOrderNo }}'><br>
+        <input type='hidden' name='Amt' value='{{ Pay2GoInfo.Amt }}'><br>
+        <input type='hidden' name='ItemDesc' value='{{ Pay2GoInfo.ItemDesc }}'><br>
+        <input type='hidden' name='Email' value='{{ Pay2GoInfo.Email }}'><br>
+        <input type='hidden' name='LoginType' value='0'><br>
+        <input type='hidden' name='ReturnURL' value='{{ Pay2GoInfo.ReturnURL }}'><br>
+        <input type='hidden' value='Submit'>
+    </form>
+    <scripts>
+    <script type="text/javascript">
+        window.onload=function(){
+            document.getElementById('Pay2Go').submit()
+        }
+    </script>
+</body>
+</html>
+ 
