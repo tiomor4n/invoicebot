@@ -19,7 +19,7 @@ def verifyEmail(stremail):
         return False
 
 def chkEmail(stremail):
-    chkarr = getGspData(['email'],{'L1':'','L2':'mid','L0':''},'L2')
+    chkarr = getGspData(fields=['email'],layers={'L1':'','L2':'mid','L0':''},purpose='L2',shtno='5')
     if stremail in chkarr:
         return True
     else:

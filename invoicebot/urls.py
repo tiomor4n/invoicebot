@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^inbot/', include('inbot.urls')),
+    url(r'^order/', include('order.urls')),
 ]

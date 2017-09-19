@@ -34,7 +34,7 @@ def WriteMidEmail(mid,email):
 
 
 
-def getGspData(fields=[],layers={},purpose=''):
+def getGspData(fields=[],layers={},purpose='',shtno='1' ,detailkey=''):
     arr=[]
     aa ={}
     querychk={}
@@ -93,7 +93,7 @@ def getGspData(fields=[],layers={},purpose=''):
         
         
     
-    res = requests.get('https://spreadsheets.google.com/feeds/list/{}/5/public/values?alt=json'.format(sheetid))
+    res = requests.get('https://spreadsheets.google.com/feeds/list/{}/{}/public/values?alt=json'.format(sheetid,shtno))
     jsondata =json.loads(res.text)
 
     if purpose == 'L0':
@@ -102,5 +102,7 @@ def getGspData(fields=[],layers={},purpose=''):
         return getLayer(jsondata,'L1')
     elif purpose == 'L2':
         return getLayer(jsondata,'L2')
+    elif purpose == 'detail':
+        return getDetail(jsondata,detailkey)
     else:
         return ['err']

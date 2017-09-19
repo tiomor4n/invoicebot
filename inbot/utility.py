@@ -10,6 +10,13 @@ fileroute = djangoSettings.FILE_ROUTE
 #prefilename = 'bot\linemsg_'
 prefilename = djangoSettings.PREFILENAME
 
+
+def GetTimeStamp():
+    from datetime import datetime
+    import calendar
+    m = calendar.timegm(datetime.now().timetuple())
+    return m
+
 def ReadFromStaticBOT(mid):
     import json
     import sys

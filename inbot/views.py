@@ -11,7 +11,7 @@ import requests
 import json
 from .utility import ReadFromStaticBOT,WriteToStaticBOT,CheckStep,CheckDialog,RemoveDialog,isfloat,isint
 from .invoice import chkEmail,chkInvoiceKey,getInvoice,PrintResultWord,verifyEmail
-from .gspread import WriteMidEmail
+from .gspread import WriteMidEmail,getGspData
 from .models import oper_para
 
 
@@ -38,24 +38,6 @@ def callback(request):
 
     import json
     import requests
-    '''
-    def post_text(reply_token, text):
-        REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
-        header = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer qzQbZczY8BaDBFUUMAKaznB9XIgkSZFkCHHX7V6dAayn5q2SzH39KbSGomm7qCwJWGUarAnHFrRV2ijZYl/vPq3AGqEY0s89hZRPQODfrf74JgCL5eVpMm8Fce5CkUZQ02jCDkoVCzC9lPF4yz27xgdB04t89/1O/w1cDnyilFU=" 
-        }
-        payload = {
-              "replyToken":reply_token,
-              "messages":[
-                    {
-                        "type":"text",
-                        "text": text
-                    }
-                ]
-        }
-        requests.post(REPLY_ENDPOINT, headers=header, data=json.dumps(payload))
-    '''
 
     def getMessageTextarr(action=[]):
         resultarr=[]
@@ -72,9 +54,14 @@ def callback(request):
 
     def getParameter(purpose):
         purposedict = {
-        'start':[u'領取發票',u'人工客服'],
-        'option':[u'訂單系統',u'支付設定',u'測試功能']
+        #'start':[u'領取發票',u'人工客服'],
+        #'option':[u'特惠商品',u'支付設定',u'測試功能']
+
+        'start':getGspData(fields=['functionstart'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L1',shtno='4'),
+        'option':getGspData(fields=['functionoption'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L2',shtno='4'),
+        'startdict':getGspData(fields=['functionoption','imgururl'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L2',shtno='4',detailkey=u'領取發票')
         }
+        print (getGspData(fields=['functionoption','imgururl'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='detail',shtno='4',detailkey=u'領取發票'))
         return purposedict[purpose]
 
 
@@ -251,17 +238,39 @@ def callback(request):
                             WriteToStaticBOT(body,"ask")
                             line_bot_api.reply_message(
                                 event.reply_token, 
-                                TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的正確email來進行歸戶'),
+                                TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的正確email，以利中獎時我們能通知到您'),
                             )
                             LineMsgOut(mid = mid,message = 'input email')
 
 
-                    elif event.message.text == u'訂單系統':
-                        line_bot_api.reply_message(
+                    elif event.message.text == u'特惠商品':
+                        if chkEmail(mid):
+                            image_carousel_template = ImageCarouselTemplate(columns=[
+                                ImageCarouselColumn(image_url='https://i.imgur.com/My1DjdX.jpg',
+                                    action = URITemplateAction(
+                                         label=u'新增',
+                                         uri=oper_para.objects.get(name='HookBackURL').content + '/order/SendPay2Go'
+                                        )
+                                    ),
+
+                                ImageCarouselColumn(image_url='https://i.imgur.com/N0grLic.png',
+                                    action=MessageTemplateAction(
+                                        label=u'下單',
+                                        text=u'下單'))
+                            ])
+                            template_message = TemplateSendMessage(
+                                alt_text='ImageCarousel alt text', template=image_carousel_template)
+                            line_bot_api.reply_message(event.reply_token, template_message)
+                        else:
+                            WriteToStaticBOT(body,"ask")
+                            line_bot_api.reply_message(
                                 event.reply_token, 
-                                TextSendMessage(text=u'此功能還在開發中'),
+                                TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的正確email，以利能通知您交易相關資訊'),
                             )
-                        RemoveDialog()
+                            LineMsgOut(mid = mid,message = 'input email')
+
+                        
+
 
                     elif event.message.text == u'支付設定':
                         line_bot_api.reply_message(
@@ -335,7 +344,7 @@ def callback(request):
                                 WriteMidEmail(mid,event.message.text)
                                 line_bot_api.reply_message(
                                         event.reply_token,
-                                        TextSendMessage(text=u'您的email歸戶成功，請重新從選單選取領取發票作業'),
+                                        TextSendMessage(text=u'您的email輸入成功，請選擇開始使用來使用此機器人'),
                                     )
                                 LineMsgOut(mid,u'finish')
                                 RemoveDialog(mid)
