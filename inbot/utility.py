@@ -121,7 +121,6 @@ def CheckDialog(mid):
 def RemoveDialog(mid):
     filepath = fileroute + prefilename + mid
     os.remove(filepath)
-    print ('initial jobapply')
 
 
 def chkDict(dict={},key=''):

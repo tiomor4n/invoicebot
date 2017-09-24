@@ -27,7 +27,7 @@ def WriteMidEmail(mid,email):
     from datetime import datetime as dt
     nowstr = dt.now().strftime('%Y/%m/%d %H:%M:%S')
     sht1 = GetGsht()
-    sht12 = sht1.get_worksheet(4)
+    sht12 = sht1.get_worksheet(0)
     #acnt = len(sht12.col_values(1))-1000
     sht12.append_row([mid,email])
     return 'ok'

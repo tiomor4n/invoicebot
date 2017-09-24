@@ -54,8 +54,8 @@ def callback(request):
 
     def getParameter(purpose):
         purposedict = {
-        'start':[u'領取發票',u'人工客服'],
-        'option':[u'特惠商品',u'支付設定',u'測試功能']
+        'start':[u'領取發票',u'人工客服']
+        #'option':[u'特惠商品',u'支付設定',u'測試功能']
 
         #'start':getGspData(fields=['functionstart'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L1',shtno='4'),
         #'option':getGspData(fields=['functionoption'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L2',shtno='4'),
@@ -105,7 +105,7 @@ def callback(request):
         actionarr.append(
             URITemplateAction(
                 label=action[1],
-                uri='https://line.me/R/ti/p/%40wxv3641e'
+                uri=oper_para.objects.get(name='customer_service').content
                 )
             )
         
@@ -189,15 +189,15 @@ def callback(request):
                             RemoveDialog(mid)
                         print('start')
                         invoicearr = getParameter('start')
-                        parr = getParameter('option')
-                        print (str(parr))
+                        #parr = getParameter('option')
+                        #print (str(parr))
                         titlestr = username + u'你好!'
                         textstr = u'請從下方選單選擇您要使用的功能'
                         textstr2 = u'請選擇其他功能'
 
                         templatearr.append(getinvoiceTempArr(titlestr=titlestr,textstr=textstr,action=invoicearr,imgurl = 'https://i.imgur.com/RLCzuKI.jpg'))
                         #send_template = getButtontempText(titlestr = titlestr,textstr = textstr,action=parr)
-                        
+                        '''
                         if len(parr)<=2:
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr,addempty=True)
                         elif len(parr) == 3:
@@ -208,7 +208,7 @@ def callback(request):
                         elif len(parr) == 5:
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:3],resultarr=templatearr)
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[3:5],resultarr=templatearr,addempty=True)
-                        
+                        '''
 
 
                         send_template = TemplateSendMessage(
@@ -226,7 +226,7 @@ def callback(request):
                             RemoveDialog(mid)
                         WriteToStaticBOT(body,"ask")
                         purporse,step,last_ask,last_reply,timestamp = CheckStep(mid)
-                        if chkEmail(mid):
+                        if chkEmail(mid) != 'err':
                             line_bot_api.reply_message(
                                 event.reply_token, 
                                 TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的正確4碼英文數字領取金鑰'),
@@ -244,7 +244,7 @@ def callback(request):
 
 
                     elif event.message.text == u'特惠商品':
-                        if chkEmail(mid):
+                        if chkEmail(mid) != 'err':
                             image_carousel_template = ImageCarouselTemplate(columns=[
                                 ImageCarouselColumn(image_url='https://i.imgur.com/My1DjdX.jpg',
                                     action = URITemplateAction(
@@ -288,7 +288,7 @@ def callback(request):
 
 
 
-                    elif len(event.message.text) == 4 and chkInvoiceKey:
+                    elif len(event.message.text) == 4 and chkInvoiceKey(event.message.text):
                         if CheckDialog(mid):
                             WriteToStaticBOT(body,"ask")
                             purporse,step,last_ask,last_reply,timestamp = CheckStep(mid)
@@ -300,6 +300,27 @@ def callback(request):
                                      TextSendMessage(text=u'請輸入本次消費金額'),
                                 )
                                 LineMsgOut(mid,u'input transaction amount')
+                            elif last_reply == 'input transaction amount':
+                                print (u'進入確認發票流程')
+                                x = getInvoice(mid)
+                                if x['rtn_cd'] == '200':
+                                    str1,str2,str3,str4 = PrintResultWord(x)
+                                    line_bot_api.reply_message(
+                                        event.reply_token,
+                                        [TextSendMessage(text=str1),
+                                         TextSendMessage(text=str2),
+                                         TextSendMessage(text=str3),
+                                         TextSendMessage(text=str4),
+                                         StickerSendMessage(package_id='1',sticker_id='2')
+                                        ]
+                                    )
+                                else:
+                                    line_bot_api.reply_message(
+                                        event.reply_token,
+                                        TextSendMessage(text=x['detail']),
+                                    )
+                                LineMsgOut(mid,u'finish')
+                                RemoveDialog(mid)
                             else:
                                 EndDialog(mid,event)
                         else:
@@ -312,21 +333,22 @@ def callback(request):
                             print (last_reply)
                             if last_reply == 'input transaction amount':
                                 print (u'進入確認發票流程')
-                                x,y,z = getInvoice(mid)
-                                if x != 'err':
-                                    strx,stry,strz = PrintResultWord(x,y,z)
+                                x = getInvoice(mid)
+                                if x['rtn_cd'] == '200':
+                                    str1,str2,str3,str4 = PrintResultWord(x)
                                     line_bot_api.reply_message(
                                         event.reply_token,
-                                        [TextSendMessage(text=strx),
-                                         TextSendMessage(text=stry),
-                                         TextSendMessage(text=strz),
+                                        [TextSendMessage(text=str1),
+                                         TextSendMessage(text=str2),
+                                         TextSendMessage(text=str3),
+                                         TextSendMessage(text=str4),
                                          StickerSendMessage(package_id='1',sticker_id='2')
                                         ]
                                     )
                                 else:
                                     line_bot_api.reply_message(
                                         event.reply_token,
-                                        TextSendMessage(text=u'您輸入的資訊有誤，請確認後再重新輸入一次'),
+                                        TextSendMessage(text=x['detail']),
                                     )
                                 LineMsgOut(mid,u'finish')
                                 RemoveDialog(mid)
