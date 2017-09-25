@@ -23,7 +23,10 @@ def chkEmail(mid):
     EmailResultArr = getGspData(fields=['email'],layers={'L1':'email','L2':'mid','L0':''},purpose='detail',shtno='1',detailkey = mid)
     print (EmailResultArr)
     if EmailResultArr[0]['querychk'] == 'ok':
-        return EmailResultArr[1]['email']
+        if len(EmailResultArr)>1:
+            return EmailResultArr[1]['email']
+        else:
+            return 'err'
     else:
         return 'err'
 	
