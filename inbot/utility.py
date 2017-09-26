@@ -1,6 +1,7 @@
 import os
 import json
 from django.conf import settings as djangoSettings
+from .models import oper_para
 
 
 #fileroute = djangoSettings.STATIC_ROOT  + '\\'
@@ -159,3 +160,20 @@ def writelog(logstr):
     #logger.addHandler(ch)  
     logger.info(logstr) 
     Logger = None
+
+def getGlShortUrl(longrul):
+    import requests
+    import json
+    strurl = 'https://www.googleapis.com/urlshortener/v1/url?key=' + oper_para.objects.get(name='GoogleShortUrlApiKey').content
+    header= {
+            "Content-Type":"application/json"
+        }
+    payload = {"longUrl": longrul}
+        
+    res = requests.post(strurl,headers = header,data=json.dumps(payload))
+    return json.loads(res.text)['id']
+
+def readlog():
+    logcontent = open (fileroute + 'test.log','r')
+    return logcontent.read()
+    

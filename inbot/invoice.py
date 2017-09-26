@@ -1,7 +1,7 @@
 import os
 import json
 from django.conf import settings as djangoSettings
-from .utility import chkDict,CheckDialog
+from .utility import chkDict,CheckDialog,getGlShortUrl
 import re
 from .gspread import getGspData
 from .models import oper_para
@@ -126,7 +126,7 @@ def PrintResultWord(invoiceinfo):
 
     resultstr2 = u'如果發票中獎，本公司將寄信通知您，並於開獎翌日起十日內，將中獎發票寄信通知您做兌獎使用'
     resultstr3 = u'建議您完成歸戶，您即可在財政部電子發票整合服務平台查詢您所有的電子發票'
-    resultstr4 = u'可點選以下連結完成歸戶作業,' + url
+    resultstr4 = u'可點選以下連結完成歸戶作業,' + getGlShortUrl(url)
 
     return resultstr1,resultstr2,resultstr3,resultstr4
 

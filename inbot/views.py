@@ -9,7 +9,7 @@ from django.conf import settings as djangoSettings
 import tempfile
 import requests
 import json
-from .utility import ReadFromStaticBOT,WriteToStaticBOT,CheckStep,CheckDialog,RemoveDialog,isfloat,isint,writelog
+from .utility import ReadFromStaticBOT,WriteToStaticBOT,CheckStep,CheckDialog,RemoveDialog,isfloat,isint,writelog,readlog
 from .invoice import chkEmail,chkInvoiceKey,getInvoice,PrintResultWord,verifyEmail
 from .gspread import WriteMidEmail,getGspData
 from .models import oper_para
@@ -26,8 +26,9 @@ def callback(request):
     def getpara():
         strapi = oper_para.objects.get(name='strapi').content
         strparser = oper_para.objects.get(name='webhookparser').content
+        DebugMode = oper_para.objects.get(name='DebugMode').content
 
-        return strapi,strparser
+        return strapi,strparser,DebugMode
 
 
     def LineMsgOut(mid,message):
@@ -145,7 +146,7 @@ def callback(request):
 
         return resultarr
 
-    strapi, strparser = getpara()
+    strapi, strparser, DebugMode = getpara()
 
     def EndDialog(mid,event):
         if CheckDialog(mid):
@@ -171,7 +172,8 @@ def callback(request):
         jdata = json.loads(body)
         mid = jdata['events'][0]['source']['userId']
         events = None
-        writelog('mid:' + mid)
+        if DebugMode == 'Y':
+            writelog('mid:' + mid)
         try:
             events = parser.parse(body, signature)
         except InvalidSignatureError:
@@ -223,7 +225,8 @@ def callback(request):
 
                     elif event.message.text == u'領取發票':
                         print ('get invoice')
-                        writelog('get invoice')
+                        if DebugMode == 'Y':
+                            writelog('get invoice')
                         if CheckDialog(mid):
                             RemoveDialog(mid)
                         WriteToStaticBOT(body,"ask")
@@ -247,7 +250,8 @@ def callback(request):
 
                     elif event.message.text == u'特惠商品':
                         if chkEmail(mid) != 'err':
-                            writelog(u'step:特惠商品')
+                            if DebugMode == 'Y':
+                                writelog(u'step:特惠商品')
                             image_carousel_template = ImageCarouselTemplate(columns=[
                                 ImageCarouselColumn(image_url='https://i.imgur.com/My1DjdX.jpg',
                                     action = URITemplateAction(
@@ -276,7 +280,8 @@ def callback(request):
 
 
                     elif event.message.text == u'支付設定':
-                        writelog(u'step:支付設定')
+                        if DebugMode == 'Y':
+                            writelog(u'step:支付設定')
                         line_bot_api.reply_message(
                                 event.reply_token, 
                                 TextSendMessage(text=u'此功能還在開發中'),
@@ -284,7 +289,8 @@ def callback(request):
                         RemoveDialog()
 
                     elif event.message.text == u'測試功能':
-                        writelog(u'step:測試功能')
+                        if DebugMode == 'Y':
+                            writelog(u'step:測試功能')
                         line_bot_api.reply_message(
                                 event.reply_token, 
                                 TextSendMessage(text=u'此功能還在開發中'),
@@ -300,7 +306,8 @@ def callback(request):
                             print (last_reply)
                             if last_reply == 'input invoice key':
                                 print (u'進入輸入金額流程')
-                                writelog(u'step:input transaction amount')
+                                if DebugMode == 'Y':
+                                    writelog(u'step:input transaction amount')
                                 line_bot_api.reply_message(
                                      event.reply_token,
                                      TextSendMessage(text=u'請輸入本次消費金額'),
@@ -308,7 +315,8 @@ def callback(request):
                                 LineMsgOut(mid,u'input transaction amount')
                             elif last_reply == 'input transaction amount':
                                 print (u'call get invoice api')
-                                writelog (u'call get invoice api')
+                                if DebugMode == 'Y':
+                                    writelog (u'call get invoice api')
                                 x = getInvoice(mid)
                                 if x['rtn_cd'] == '200':
                                     str1,str2,str3,str4 = PrintResultWord(x)
@@ -340,10 +348,12 @@ def callback(request):
                             print (last_reply)
                             if last_reply == 'input transaction amount':
                                 print (u'進入確認發票流程')
-                                writelog (u'call get invoice api')
+                                if DebugMode == 'Y':
+                                    writelog (u'call get invoice api')
                                 x = getInvoice(mid)
                                 if x['rtn_cd'] == '200':
-                                    writelog (u'call get invoice api success')
+                                    if DebugMode == 'Y':
+                                        writelog (u'call get invoice api success')
                                     str1,str2,str3,str4 = PrintResultWord(x)
                                     line_bot_api.reply_message(
                                         event.reply_token,
@@ -355,7 +365,8 @@ def callback(request):
                                         ]
                                     )
                                 else:
-                                    writelog (u'call get invoice api bad response:' + x['detail'])
+                                    if DebugMode == 'Y':
+                                        writelog (u'call get invoice api bad response:' + x['detail'])
                                     line_bot_api.reply_message(
                                         event.reply_token,
                                         TextSendMessage(text=x['detail']),
@@ -373,7 +384,8 @@ def callback(request):
                             purporse,step,last_ask,last_reply,timestamp = CheckStep(mid)
                             print (last_reply)
                             if last_reply == 'input email':
-                                writelog (u'input email')
+                                if DebugMode == 'Y':
+                                    writelog (u'input email')
                                 WriteMidEmail(mid,event.message.text)
                                 line_bot_api.reply_message(
                                         event.reply_token,
@@ -512,3 +524,6 @@ def callback(request):
         print ('from get')
         return HttpResponse('from get')
 
+@csrf_exempt
+def checklog(request):
+    return HttpResponse(readlog())
