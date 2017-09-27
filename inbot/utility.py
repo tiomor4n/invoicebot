@@ -2,6 +2,7 @@ import os
 import json
 from django.conf import settings as djangoSettings
 from .models import oper_para
+import logging
 
 
 #fileroute = djangoSettings.STATIC_ROOT  + '\\'
@@ -145,21 +146,49 @@ def isint(value):
     except ValueError:
         return False
 
+
+
 def writelog(logstr):
-    import logging
-    logger = logging.getLogger('mylogger')  
-    logger.setLevel(logging.DEBUG)  
-    fh = logging.FileHandler(fileroute + '\\test.log')  
-    fh.setLevel(logging.DEBUG)  
-    #ch = logging.StreamHandler()  
-    #ch.setLevel(logging.DEBUG)  
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')  
-    fh.setFormatter(formatter)  
-    #ch.setFormatter(formatter)  
-    logger.addHandler(fh)  
-    #logger.addHandler(ch)  
-    logger.info(logstr) 
-    Logger = None
+    if oper_para.objects.get(name='DebugMode').content != 'Y':
+        return
+
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    fh = logging.FileHandler(fileroute + '\\test.log')
+    fh.setLevel(logging.DEBUG)
+    sh.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    sh.setFormatter(formatter)
+    logger.addHandler(fh)
+    logger.addHandler(sh)
+    logger.info(logstr + '<br>')
+    logger.removeHandler(sh)
+    logger.removeHandler(fh)
+
+def clearlog():
+    if oper_para.objects.get(name='DebugMode').content != 'Y':
+        return 'debug mode is closed'
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    fh = logging.FileHandler(fileroute + '\\test.log',mode = 'w+')
+    fh.setLevel(logging.DEBUG)
+    sh.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    sh.setFormatter(formatter)
+    logger.addHandler(fh)
+    logger.addHandler(sh)
+    logger.info('log restarted<br>')
+    logger.removeHandler(sh)
+    logger.removeHandler(fh)
+    return 'log cleared'
+   
+    
 
 def getGlShortUrl(longrul):
     import requests
@@ -174,6 +203,12 @@ def getGlShortUrl(longrul):
     return json.loads(res.text)['id']
 
 def readlog():
-    logcontent = open (fileroute + 'test.log','r')
+    if oper_para.objects.get(name='DebugMode').content != 'Y':
+        return 'debug mode is closed'
+    try:
+        logcontent = open (fileroute + 'test.log','r')
+    except FileNotFoundError:
+        return 'log file not found'
+
     return logcontent.read()
     
