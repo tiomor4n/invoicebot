@@ -206,7 +206,7 @@ def readlog():
     if oper_para.objects.get(name='DebugMode').content != 'Y':
         return 'debug mode is closed'
     try:
-        logcontent = open (fileroute + 'test.log','r')
+        logcontent = open (fileroute + '\\test.log','r')
     except FileNotFoundError:
         return 'log file not found'
 
