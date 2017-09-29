@@ -1,7 +1,7 @@
 import os
 import json
 from django.conf import settings as djangoSettings
-from .utility import chkDict,CheckDialog,getGlShortUrl
+from .utility import chkDict,CheckDialog,getGlShortUrl,writelog
 import re
 from .gspread import getGspData
 from .models import oper_para
@@ -20,8 +20,10 @@ def verifyEmail(stremail):
         return False
 
 def chkEmail(mid):
+    writelog('proc:chkEmail')
     EmailResultArr = getGspData(fields=['email'],layers={'L1':'email','L2':'mid','L0':''},purpose='detail',shtno='1',detailkey = mid)
     print (EmailResultArr)
+    #writelog('EmailResultArr:' + EmailResultArr.text)
     if EmailResultArr[0]['querychk'] == 'ok':
         if len(EmailResultArr)>1:
             return EmailResultArr[1]['email']
@@ -33,6 +35,7 @@ def chkEmail(mid):
 
 def chkInvoiceKey(key):
     import re
+    writelog('proc:chkInvoiceKey')
     z = re.match('[A-Za-z0-9_]*',key.upper())
     if z[0] == key.upper():
         return True
@@ -40,24 +43,10 @@ def chkInvoiceKey(key):
         return False
 
 def getinvoicedata(bot_verification_code,email,total_amount):
-    def writelog(logstr):
-        import logging
-        logger = logging.getLogger('mylogger')  
-        logger.setLevel(logging.DEBUG)  
-        fh = logging.FileHandler('test.log')  
-        fh.setLevel(logging.DEBUG)  
-        ch = logging.StreamHandler()  
-        ch.setLevel(logging.DEBUG)  
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')  
-        fh.setFormatter(formatter)  
-        ch.setFormatter(formatter)  
-        logger.addHandler(fh)  
-        logger.addHandler(ch)  
-        logger.info(logstr) 
-        
     def getinvoicetoken():
         import requests
         import json
+        writelog('proc:getinvoicedata/getinvoicetoken')
         strurl = 'http://api-uat.invoicego.tw/login/api-token-auth/'
         header= {
             "Content-Type":"application/json"
@@ -72,6 +61,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
     
     import requests
     import json
+    writelog('proc:getinvoicedata')
     strurl = 'http://api-uat.invoicego.tw/invoice/invoice-taker-bot/'
     token = getinvoicetoken()
     #print (str(token))
@@ -91,7 +81,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
         #return res.json()['rtn_cd'],res.json()['invoice_number'],res.json()['random_number'],res.json()['total_amount'],res.json
         return res.json()
     except:
-        writelog('error')
+        writelog('getinvoicedata api error')
 
 def getInvoice(mid):
     filename = prefilename + mid

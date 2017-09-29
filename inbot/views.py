@@ -55,8 +55,8 @@ def callback(request):
 
     def getParameter(purpose):
         purposedict = {
-        'start':[u'領取發票',u'人工客服']
-        #'option':[u'特惠商品',u'支付設定',u'測試功能']
+        'start':[u'領取發票',u'人工客服'],
+        'option':[u'特惠商品',u'支付設定',u'測試功能']
 
         #'start':getGspData(fields=['functionstart'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L1',shtno='4'),
         #'option':getGspData(fields=['functionoption'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L2',shtno='4'),
@@ -188,15 +188,15 @@ def callback(request):
                             RemoveDialog(mid)
                         print('start')
                         invoicearr = getParameter('start')
-                        #parr = getParameter('option')
+                        parr = getParameter('option')
                         #print (str(parr))
                         titlestr = username + u'你好!'
                         textstr = u'請從下方選單選擇您要使用的功能'
                         textstr2 = u'請選擇其他功能'
 
                         templatearr.append(getinvoiceTempArr(titlestr=titlestr,textstr=textstr,action=invoicearr,imgurl = 'https://i.imgur.com/LLlLlPi.jpg'))
-                        #send_template = getButtontempText(titlestr = titlestr,textstr = textstr,action=parr)
-                        '''
+                        send_template = getButtontempText(titlestr = titlestr,textstr = textstr,action=parr)
+                        
                         if len(parr)<=2:
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr,addempty=True)
                         elif len(parr) == 3:
@@ -207,7 +207,7 @@ def callback(request):
                         elif len(parr) == 5:
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:3],resultarr=templatearr)
                             send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[3:5],resultarr=templatearr,addempty=True)
-                        '''
+                        
 
 
                         send_template = TemplateSendMessage(
