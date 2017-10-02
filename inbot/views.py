@@ -56,7 +56,7 @@ def callback(request):
     def getParameter(purpose):
         purposedict = {
         'start':[u'領取發票',u'人工客服'],
-        'option':[u'特惠商品',u'支付設定',u'測試功能']
+        #'option':[u'特惠商品',u'支付設定',u'測試功能']
 
         #'start':getGspData(fields=['functionstart'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L1',shtno='4'),
         #'option':getGspData(fields=['functionoption'],layers={'L1':'functionstart','L2':'functionoption','L0':''},purpose='L2',shtno='4'),
