@@ -229,7 +229,7 @@ def callback(request):
                         if chkEmail(mid) != 'err':
                             line_bot_api.reply_message(
                                 event.reply_token, 
-                                TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的正確4碼英文數字領取金鑰'),
+                                TextSendMessage(text=u'請點擊下方的鍵盤，輸入您的訂單後四碼'),
                             )
                             LineMsgOut(mid = mid,message = 'input invoice key')
                             #有email,正常流程
