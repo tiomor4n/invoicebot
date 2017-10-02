@@ -188,25 +188,25 @@ def callback(request):
                             RemoveDialog(mid)
                         print('start')
                         invoicearr = getParameter('start')
-                        parr = getParameter('option')
+                        #parr = getParameter('option')
                         #print (str(parr))
                         titlestr = username + u'你好!'
                         textstr = u'請從下方選單選擇您要使用的功能'
                         textstr2 = u'請選擇其他功能'
 
                         templatearr.append(getinvoiceTempArr(titlestr=titlestr,textstr=textstr,action=invoicearr,imgurl = 'https://i.imgur.com/LLlLlPi.jpg'))
-                        send_template = getButtontempText(titlestr = titlestr,textstr = textstr,action=parr)
+                        #send_template = getButtontempText(titlestr = titlestr,textstr = textstr,action=parr)
                         
-                        if len(parr)<=2:
-                            send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr,addempty=True)
-                        elif len(parr) == 3:
-                            send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr,resultarr = templatearr)
-                        elif len(parr) == 4:
-                            send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr)
-                            send_template_Ccolumn2 = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[2:4],resultarr=templatearr)
-                        elif len(parr) == 5:
-                            send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:3],resultarr=templatearr)
-                            send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[3:5],resultarr=templatearr,addempty=True)
+                        #if len(parr)<=2:
+                        #    send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr,addempty=True)
+                        #elif len(parr) == 3:
+                        #    send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr,resultarr = templatearr)
+                        #elif len(parr) == 4:
+                        #    send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:2],resultarr=templatearr)
+                        #    send_template_Ccolumn2 = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[2:4],resultarr=templatearr)
+                        #elif len(parr) == 5:
+                        #    send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[0:3],resultarr=templatearr)
+                        #    send_template_Ccolumn = getCcolumnTextArr(titlestr = titlestr,textstr = textstr2,imgurl='https://i.imgur.com/RLCzuKI.jpg',action=parr[3:5],resultarr=templatearr,addempty=True)
                         
 
 
