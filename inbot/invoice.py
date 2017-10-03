@@ -48,6 +48,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
         import json
         writelog('proc:getinvoicedata/getinvoicetoken')
         strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/login/api-token-auth/'
+        print (strurl)
         header= {
             "Content-Type":"application/json"
         }
@@ -56,6 +57,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
             "password":oper_para.objects.get(name='invoicego_get_pw').content
         }
         res = requests.post(strurl,headers = header,data=json.dumps(payload))
+        print (res.text)
         return res.json()['token']
     
     
