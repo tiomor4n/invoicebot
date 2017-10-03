@@ -47,7 +47,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
         import requests
         import json
         writelog('proc:getinvoicedata/getinvoicetoken')
-        strurl = 'http://api-uat.invoicego.tw/login/api-token-auth/'
+        strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/login/api-token-auth/'
         header= {
             "Content-Type":"application/json"
         }
@@ -62,7 +62,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
     import requests
     import json
     writelog('proc:getinvoicedata')
-    strurl = 'http://api-uat.invoicego.tw/invoice/invoice-taker-bot/'
+    strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/invoice/invoice-taker-bot/'
     token = getinvoicetoken()
     #print (str(token))
     header = {
@@ -106,7 +106,7 @@ def getInvoice(mid):
 
 def PrintResultWord(invoiceinfo):
 
-    url = oper_para.objects.get(name='InvoiceSumUrl').content + '?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
+    url = oper_para.objects.get(name='InvoiceSumUrl').content + '/carriermgt/?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
 
 
     resultstr1 = u'您的發票已經順利成立，\n'
