@@ -42,29 +42,35 @@ def chkInvoiceKey(key):
     else:
         return False
 
-def getinvoicedata(bot_verification_code,email,total_amount):
+def getinvoicedata(bot_verification_code,email,total_amount,exe_time):
     def getinvoicetoken():
         import requests
         import json
         writelog('proc:getinvoicedata/getinvoicetoken')
-        strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/login/api-token-auth/'
-        print (strurl)
+        strurl = 'http://api-uat.invoicego.tw/login/api-token-auth/'
         header= {
             "Content-Type":"application/json"
         }
-        payload = {
-            "username":oper_para.objects.get(name='invoicego_get_id').content,
-            "password":oper_para.objects.get(name='invoicego_get_pw').content
-        }
+        if exe_time == 'first':
+            payload = {
+                "username":oper_para.objects.get(name='invoicego_get_id').content,
+                "password":oper_para.objects.get(name='invoicego_get_pw').content
+            }
+        else:    #second
+            payload = {
+                "username":oper_para.objects.get(name='invoicego_get_id_2').content,
+                "password":oper_para.objects.get(name='invoicego_get_pw_2').content
+            }
+
+
         res = requests.post(strurl,headers = header,data=json.dumps(payload))
-        print (res.text)
         return res.json()['token']
     
     
     import requests
     import json
     writelog('proc:getinvoicedata')
-    strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/invoice/invoice-taker-bot/'
+    strurl = 'http://api-uat.invoicego.tw/invoice/invoice-taker-bot/'
     token = getinvoicetoken()
     #print (str(token))
     header = {
@@ -85,7 +91,7 @@ def getinvoicedata(bot_verification_code,email,total_amount):
     except:
         writelog('getinvoicedata api error')
 
-def getInvoice(mid):
+def getInvoice(mid,exe_time):
     filename = prefilename + mid
     filepath = fileroute +  filename
     InvoiceKey = ''
@@ -97,7 +103,7 @@ def getInvoice(mid):
             InvoiceKey = data['step1']['ask'].upper()
             amount = data['step2']['ask']
             email = chkEmail(mid)
-            invoicedata = getinvoicedata(InvoiceKey,email,amount)
+            invoicedata = getinvoicedata(InvoiceKey,email,amount,exe_time)
             try:
                 return invoicedata
             except:
@@ -108,7 +114,7 @@ def getInvoice(mid):
 
 def PrintResultWord(invoiceinfo):
 
-    url = oper_para.objects.get(name='InvoiceSumUrl').content + '/carriermgt/?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
+    url = oper_para.objects.get(name='InvoiceSumUrl').content + '?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
 
 
     resultstr1 = u'您的發票已經順利成立，\n'
