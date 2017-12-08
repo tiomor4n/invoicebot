@@ -47,7 +47,7 @@ def getinvoicedata(bot_verification_code,email,total_amount,exe_time):
         import requests
         import json
         writelog('proc:getinvoicedata/getinvoicetoken')
-        strurl = 'http://api-uat.invoicego.tw/login/api-token-auth/'
+        strurl = oper_para.objects.get(name='InvoiceSumUrl').content +  '/login/api-token-auth/'
         header= {
             "Content-Type":"application/json"
         }
