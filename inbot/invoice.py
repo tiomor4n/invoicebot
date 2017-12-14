@@ -70,7 +70,7 @@ def getinvoicedata(bot_verification_code,email,total_amount,exe_time):
     import requests
     import json
     writelog('proc:getinvoicedata')
-    strurl = 'http://api-uat.invoicego.tw/invoice/invoice-taker-bot/'
+    strurl = oper_para.objects.get(name='InvoiceSumUrl').content + '/invoice/invoice-taker-bot/'
     token = getinvoicetoken()
     #print (str(token))
     header = {
