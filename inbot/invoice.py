@@ -135,7 +135,7 @@ def PrintResultWordB2B(invoiceinfo):
     resultstr1 = resultstr1 + u'營業稅：{}\n'.format(invoiceinfo['tax_amount'])
     resultstr1 = resultstr1 + u'總計：{}\n'.format(invoiceinfo['total_amount'])
 
-    resultstr2 = u'請記得自電子信箱列印該張進項發票，並交由稅務會計事務所抵扣當期營業稅，謝謝!'
+    resultstr2 = u'請記得至電子信箱列印該張進項發票，並交由稅務會計事務所抵扣當期營業稅，謝謝!'
 
     return resultstr1,resultstr2
 
