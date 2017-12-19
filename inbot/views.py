@@ -432,7 +432,7 @@ def callback(request):
                                 WriteMidEmail(mid,event.message.text)
                                 line_bot_api.reply_message(
                                         event.reply_token,
-                                        TextSendMessage(text=u'您的email輸入成功，請選擇開始使用來使用此機器人'),
+                                        TextSendMessage(text=u'您的email輸入成功，請自下方選單選擇您要的選項來使用此機器人'),
                                     )
                                 LineMsgOut(mid,u'finish')
                                 RemoveDialog(mid)
