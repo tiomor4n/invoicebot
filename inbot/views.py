@@ -10,7 +10,7 @@ import tempfile
 import requests
 import json
 from .utility import ReadFromStaticBOT,WriteToStaticBOT,CheckStep,CheckDialog,RemoveDialog,isfloat,isint,writelog,readlog,clearlog,getGlShortUrl
-from .invoice import chkEmail,chkInvoiceKey,getInvoice,PrintResultWord,verifyEmail
+from .invoice import chkEmail,chkInvoiceKey,getInvoice,PrintResultWord,verifyEmail,PrintResultWordB2B
 from .gspread import WriteMidEmail,getGspData
 from .models import oper_para
 
@@ -309,31 +309,51 @@ def callback(request):
                                 writelog (u'call get invoice api')
                                 x = getInvoice(mid,'first')
                                 if x['rtn_cd'] == '200':
-                                    str1,str2,str3,str4 = PrintResultWord(x)
-                                    line_bot_api.reply_message(
-                                        event.reply_token,
-                                        [TextSendMessage(text=str1),
-                                         TextSendMessage(text=str2),
-                                         TextSendMessage(text=str3),
-                                         TextSendMessage(text=str4),
-                                         StickerSendMessage(package_id='1',sticker_id='2')
-                                        ]
-                                    )
+                                    if x['random_number'] is not null:
+                                        str1,str2,str3,str4 = PrintResultWord(x)
+                                        line_bot_api.reply_message(
+                                            event.reply_token,
+                                            [TextSendMessage(text=str1),
+                                            TextSendMessage(text=str2),
+                                            TextSendMessage(text=str3),
+                                            TextSendMessage(text=str4),
+                                            StickerSendMessage(package_id='1',sticker_id='2')
+                                            ]
+                                        )
+                                    else:
+                                        str1,str2 = PrintResultWordB2B(x)
+                                        line_bot_api.reply_message(
+                                            event.reply_token,
+                                            [TextSendMessage(text=str1),
+                                            TextSendMessage(text=str2)
+                                            ]
+                                        )
+
                                 else:
                                     if last_reply == 'input transaction amount':   #第一次錯
                                         LineMsgOut (mid,u'can not get invoice data')
                                         x = getInvoice(mid,'second')
                                         if x['rtn_cd'] == '200':
-                                            str1,str2,str3,str4 = PrintResultWord(x)
-                                            line_bot_api.reply_message(
-                                                event.reply_token,
-                                                [TextSendMessage(text=str1),
-                                                TextSendMessage(text=str2),
-                                                TextSendMessage(text=str3),
-                                                TextSendMessage(text=str4),
-                                                StickerSendMessage(package_id='1',sticker_id='2')
-                                                ]
-                                            )
+                                            if x['random_number'] is not None:
+                                                str1,str2,str3,str4 = PrintResultWord(x)
+                                                line_bot_api.reply_message(
+                                                    event.reply_token,
+                                                    [TextSendMessage(text=str1),
+                                                    TextSendMessage(text=str2),
+                                                    TextSendMessage(text=str3),
+                                                    TextSendMessage(text=str4),
+                                                    StickerSendMessage(package_id='1',sticker_id='2')
+                                                    ]
+                                                )
+                                            else:
+                                                str1,str2 = PrintResultWordB2B(x)
+                                                line_bot_api.reply_message(
+                                                    event.reply_token,
+                                                    [TextSendMessage(text=str1),
+                                                    TextSendMessage(text=str2)
+                                                    ]
+                                                )
+
 
                                         else:    #第二次錯
                                             writelog (u'call get invoice api bad response:' + x['detail'])
@@ -367,32 +387,52 @@ def callback(request):
                                 writelog (u'call get invoice api')
                                 x = getInvoice(mid,'first')
                                 if x['rtn_cd'] == '200':
-                                    writelog (u'call get invoice api success')
-                                    str1,str2,str3,str4 = PrintResultWord(x)
-                                    line_bot_api.reply_message(
-                                        event.reply_token,
-                                        [TextSendMessage(text=str1),
-                                         TextSendMessage(text=str2),
-                                         TextSendMessage(text=str3),
-                                         TextSendMessage(text=str4),
-                                         StickerSendMessage(package_id='1',sticker_id='2')
-                                        ]
-                                    )
+                                    if x['random_number'] is not None:
+                                        writelog (u'call get invoice api success')
+                                        str1,str2,str3,str4 = PrintResultWord(x)
+                                        line_bot_api.reply_message(
+                                            event.reply_token,
+                                            [TextSendMessage(text=str1),
+                                            TextSendMessage(text=str2),
+                                            TextSendMessage(text=str3),
+                                            TextSendMessage(text=str4),
+                                            StickerSendMessage(package_id='1',sticker_id='2')
+                                            ]
+                                        )
+                                    else:
+                                        str1,str2 = PrintResultWordB2B(x)
+                                        line_bot_api.reply_message(
+                                            event.reply_token,
+                                            [TextSendMessage(text=str1),
+                                            TextSendMessage(text=str2)
+                                            ]
+                                        )
+
                                 else:
                                     if last_reply == 'input transaction amount':
                                         LineMsgOut (mid,u'can not get invoice data')
                                         x = getInvoice(mid,'second')
                                         if x['rtn_cd'] == '200':
-                                            str1,str2,str3,str4 = PrintResultWord(x)
-                                            line_bot_api.reply_message(
-                                                event.reply_token,
-                                                [TextSendMessage(text=str1),
-                                                TextSendMessage(text=str2),
-                                                TextSendMessage(text=str3),
-                                                TextSendMessage(text=str4),
-                                                StickerSendMessage(package_id='1',sticker_id='2')
-                                                ]
-                                            )
+                                            if x['random_number'] is not None:
+                                                str1,str2,str3,str4 = PrintResultWord(x)
+                                                line_bot_api.reply_message(
+                                                    event.reply_token,
+                                                    [TextSendMessage(text=str1),
+                                                    TextSendMessage(text=str2),
+                                                    TextSendMessage(text=str3),
+                                                    TextSendMessage(text=str4),
+                                                    StickerSendMessage(package_id='1',sticker_id='2')
+                                                    ]
+                                                )
+                                            else:
+                                                str1,str2 = PrintResultWordB2B(x)
+                                                line_bot_api.reply_message(
+                                                    event.reply_token,
+                                                    [TextSendMessage(text=str1),
+                                                    TextSendMessage(text=str2)
+                                                    ]
+                                                )
+
                                         else:
                                             writelog (u'call get invoice api bad response:' + x['detail'])
                                             print (str(oper_para.objects.get(name='is_public').content))
@@ -432,7 +472,7 @@ def callback(request):
                                 WriteMidEmail(mid,event.message.text)
                                 line_bot_api.reply_message(
                                         event.reply_token,
-                                        TextSendMessage(text=u'您的email輸入成功，請自下方選單選擇您要的選項來使用此機器人'),
+                                        TextSendMessage(text=u'您的email輸入成功，請選擇開始使用來使用此機器人'),
                                     )
                                 LineMsgOut(mid,u'finish')
                                 RemoveDialog(mid)
