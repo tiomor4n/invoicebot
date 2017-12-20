@@ -309,7 +309,7 @@ def callback(request):
                                 writelog (u'call get invoice api')
                                 x = getInvoice(mid,'first')
                                 if x['rtn_cd'] == '200':
-                                    if x['random_number'] is not null:
+                                    if x['random_number'] is not None:
                                         str1,str2,str3,str4 = PrintResultWord(x)
                                         line_bot_api.reply_message(
                                             event.reply_token,
