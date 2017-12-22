@@ -29,6 +29,8 @@ def WriteMidEmail(mid,email):
     sht1 = GetGsht()
     sht12 = sht1.get_worksheet(0)
     #acnt = len(sht12.col_values(1))-1000
+    email = email.replace(' ','')
+    email = email.replace('..','.')
     sht12.append_row([mid,email])
     return 'ok'
 

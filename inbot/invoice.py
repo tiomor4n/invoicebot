@@ -14,6 +14,10 @@ prefilename = djangoSettings.PREFILENAME
 
 def verifyEmail(stremail):
     import re
+    if stremail.find(' ') != -1:
+        return False
+    if stremail.find('..') != -1:
+        return False
     if re.match('^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$',stremail):
         return True
     else:
