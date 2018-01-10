@@ -118,7 +118,9 @@ def getInvoice(mid,exe_time):
 
 def PrintResultWord(invoiceinfo):
 
-    url = oper_para.objects.get(name='InvoiceSumUrl').content + '?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
+    #url = oper_para.objects.get(name='InvoiceSumUrl').content + '?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
+    url = 'https://www.invoicego.tw/carriermgt/' + '?carrier_id={}&account={}&company={}'.format(invoiceinfo['carrier_id'],invoiceinfo['account'],invoiceinfo['company'])
+     
 
 
     resultstr1 = u'您的發票已經順利成立，\n'
